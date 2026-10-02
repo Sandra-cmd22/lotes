@@ -1,0 +1,35 @@
+[
+  {
+    "nome": "João da Silva",
+    "telefone": "(11) 99999-0000",
+    "cpf": "",
+    "observacoes": "Comprou dois lotes",
+    "terrenos": [
+      {
+        "quadra": "A",
+        "lote": "12",
+        "valor": 25000,
+        "entrada": 3000,
+        "dataEntrada": "2026-01-10",
+        "dataPrimeiraParcela": "2026-02-10",
+        "qtdParcelas": 22,
+        "valorParcela": 1000,
+        "pagamentos": [
+          { "data": "10/01/2026", "valor": 3000, "descricao": "Entrada" },
+          { "data": "10/02/2026", "valor": 1000, "descricao": "Parcela 1" },
+          { "data": "10/03/2026", "valor": 1000, "descricao": "Parcela 2" }
+        ]
+      },
+      {
+        "quadra": "B",
+        "lote": "08",
+        "valor": 35000,
+        "entrada": 5000,
+        "dataEntrada": "2026-01-15",
+        "dataPrimeiraParcela": "2026-02-15",
+        "qtdParcelas": 30,
+        "valorParcela": 1000
+      }
+    ]
+  }
+]
