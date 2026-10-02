@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "check-backup": "node scripts/check-backup.mjs"
+    "check-backup": "node scripts/check-backup.mjs",
+    "export-dados": "npx tsx scripts/export-app-data.ts"
   },
   "dependencies": {
     "lucide-react": "^1.50.0",

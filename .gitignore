@@ -12,10 +12,6 @@ dist
 dist-ssr
 *.local
 
-# Backup com dados reais de clientes (importar localmente)
-public/backup_banco.json
-backup_banco.json
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
