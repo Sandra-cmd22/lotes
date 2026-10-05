@@ -40,7 +40,8 @@ export interface Payment {
   id: string
   clientId: string
   lotId: string
-  date: string
+  /** Omitido quando só a planilha confirma o pagamento, sem data no Firestore. */
+  date?: string
   amount: number
   description: string
   installmentId?: string
@@ -53,6 +54,8 @@ export interface AppData {
   lots: Lot[]
   payments: Payment[]
   version: number
+  /** Atualizado ao gravar public/dados-loteamento.json — o app recarrega quando muda. */
+  bundledAt?: string
 }
 
 export interface ImportPreview {

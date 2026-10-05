@@ -62,14 +62,15 @@ export function applyEntradaAsPaid(data: AppData): AppData {
 /** Ajustes informados pelo proprietário (out/2026) */
 const EM_DIA_NAME_PARTS = [
   'raimundo',
-  'iranildo',
-  'marquinho',
-  'caique',
-  'marcelo',
-  'maria lucia',
-  'barroso',
-  'rerin',
   'alex',
+  'deurismar',
+  'roberlania',
+  'robertania',
+  'davi',
+  'barroso',
+  'maria lucia',
+  'marcelo',
+  'sarah',
 ]
 
 function normalizeName(name: string): string {

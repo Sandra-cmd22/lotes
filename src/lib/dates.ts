@@ -14,7 +14,7 @@ export function parseISODate(iso: string): Date {
   return new Date(y, m - 1, d)
 }
 
-export function formatDateBR(iso: string): string {
+export function formatDateBR(iso: string | undefined): string {
   if (!iso) return '—'
   const [y, m, d] = iso.split('-')
   return `${d}/${m}/${y}`

@@ -20,7 +20,10 @@ export function lotLabel(lot: Lot): string {
 export function getPaymentsForLot(payments: Payment[], lotId: string): Payment[] {
   return payments
     .filter((p) => p.lotId === lotId)
-    .sort((a, b) => a.date.localeCompare(b.date) || a.createdAt.localeCompare(b.createdAt))
+    .sort(
+      (a, b) =>
+        (a.date ?? '').localeCompare(b.date ?? '') || a.createdAt.localeCompare(b.createdAt),
+    )
 }
 
 export function getLotTotalPaid(lot: Lot, payments: Payment[]): number {
@@ -132,9 +135,10 @@ export function getClientSummary(
   const oldest = overdueItems[0]
 
   const clientPayments = payments.filter((p) => p.clientId === client.id)
+  const dated = clientPayments.filter((p) => p.date)
   const lastPaymentDate =
-    clientPayments.length > 0
-      ? clientPayments.reduce((max, p) => (p.date > max ? p.date : max), clientPayments[0].date)
+    dated.length > 0
+      ? dated.reduce((max, p) => (p.date! > max ? p.date! : max), dated[0].date!)
       : undefined
 
   return {
@@ -192,7 +196,10 @@ export function buildPaymentHistoryWithBalance(
   const totalPurchased = clientLots.reduce((s, l) => s + l.totalValue, 0)
   const clientPayments = payments
     .filter((p) => p.clientId === clientId)
-    .sort((a, b) => a.date.localeCompare(b.date) || a.createdAt.localeCompare(b.createdAt))
+    .sort(
+      (a, b) =>
+        (a.date ?? '').localeCompare(b.date ?? '') || a.createdAt.localeCompare(b.createdAt),
+    )
 
   let runningPaid = 0
   return clientPayments.map((p) => {

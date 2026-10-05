@@ -14,8 +14,8 @@ const config: Record<
   atraso: {
     label: 'Em atraso',
     short: 'Atraso',
-    className: 'bg-amber-50 text-amber-900 border-amber-200',
-    dot: 'bg-amber-500',
+    className: 'bg-rose-50 text-rose-800 border-rose-200',
+    dot: 'bg-rose-500',
   },
   quitado: {
     label: 'Quitado',

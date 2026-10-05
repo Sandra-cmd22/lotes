@@ -9,9 +9,14 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "check-backup": "node scripts/check-backup.mjs",
-    "export-dados": "npx tsx scripts/export-app-data.ts"
+    "export-dados": "npx tsx scripts/export-app-data.ts",
+    "supabase:schema": "npx tsx --env-file=.env scripts/apply-supabase-schema.ts",
+    "supabase:seed": "npx tsx --env-file=.env scripts/push-supabase-seed.ts",
+    "supabase:setup": "npm run supabase:schema && npm run supabase:seed",
+    "apply-planilha": "npx tsx scripts/apply-partial-table.ts --write && npm run supabase:seed"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
     "lucide-react": "^1.50.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

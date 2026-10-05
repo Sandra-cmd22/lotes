@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { mergeImport, parseImportJson, type ImportPreview } from '../lib/importJson'
-import { previewProjectBackup } from '../lib/seedBackup'
+import { previewProjectBackup, replaceFromPublicAppData } from '../lib/seedBackup'
 import { exportDataJson } from '../lib/storage'
 import { useData } from '../context/DataContext'
 import { PrimaryButton, SecondaryButton } from '../components/Field'
@@ -11,6 +11,8 @@ export function ImportPage() {
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
   const [loadingBackup, setLoadingBackup] = useState(false)
+  const [loadingBundled, setLoadingBundled] = useState(false)
+  const [bundledMsg, setBundledMsg] = useState<string | null>(null)
 
   const loadProjectBackup = async () => {
     setError(null)
@@ -50,6 +52,31 @@ export function ImportPage() {
     setPreview(null)
   }
 
+  const reloadFromProjectJson = async () => {
+    if (
+      !window.confirm(
+        'Isso substitui TODOS os dados deste aparelho pelos de public/dados-loteamento.json. Continuar?',
+      )
+    ) {
+      return
+    }
+    setBundledMsg(null)
+    setLoadingBundled(true)
+    try {
+      const result = await replaceFromPublicAppData()
+      if (!result.ok) {
+        setBundledMsg(result.error)
+        return
+      }
+      replaceData(result.data)
+      setBundledMsg(
+        `Dados atualizados (${result.data.clients.length} clientes, ${result.data.lots.length} lotes).`,
+      )
+    } finally {
+      setLoadingBundled(false)
+    }
+  }
+
   const downloadBackup = () => {
     const blob = new Blob([exportDataJson(data)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
@@ -62,6 +89,29 @@ export function ImportPage() {
 
   return (
     <div className="space-y-6 text-left">
+      <section className="rounded-2xl border border-teal-200 bg-teal-50/30 p-4">
+        <h2 className="text-base font-semibold text-slate-900">Atualizar do projeto</h2>
+        <p className="text-sm text-slate-600 mt-2">
+          Use depois de rodar o cruzamento no repositório. Carrega{' '}
+          <code className="bg-white px-1 rounded">public/dados-loteamento.json</code> e substitui o
+          que está salvo neste navegador.
+        </p>
+        <PrimaryButton
+          className="mt-3"
+          disabled={loadingBundled}
+          onClick={() => void reloadFromProjectJson()}
+        >
+          {loadingBundled ? 'Carregando…' : 'Recarregar dados-loteamento.json'}
+        </PrimaryButton>
+        {bundledMsg && (
+          <p
+            className={`mt-3 text-sm ${bundledMsg.startsWith('Dados') ? 'text-emerald-700' : 'text-red-600'}`}
+          >
+            {bundledMsg}
+          </p>
+        )}
+      </section>
+
       <section className="rounded-2xl border border-slate-200 p-4 bg-white">
         <h2 className="text-base font-semibold text-slate-900">Importar JSON</h2>
         <p className="text-sm text-slate-600 mt-2">

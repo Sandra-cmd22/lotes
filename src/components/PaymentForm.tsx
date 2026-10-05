@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   getLotRemaining,
   getLotTotalPaid,
@@ -17,12 +17,14 @@ export function PaymentForm({
   clientId,
   lots,
   defaultLotId,
+  defaultInstallmentId,
   onSaved,
   onCancel,
 }: {
   clientId: string
   lots: Lot[]
   defaultLotId?: string
+  defaultInstallmentId?: string
   onSaved: (remaining: number) => void
   onCancel: () => void
 }) {
@@ -30,7 +32,7 @@ export function PaymentForm({
   const [lotId, setLotId] = useState(defaultLotId ?? lots[0]?.id ?? '')
   const [amountStr, setAmountStr] = useState('')
   const [date, setDate] = useState(todayISO())
-  const [installmentId, setInstallmentId] = useState('')
+  const [installmentId, setInstallmentId] = useState(defaultInstallmentId ?? '')
   const [note, setNote] = useState('')
 
   const lot = lots.find((l) => l.id === lotId)
@@ -40,6 +42,25 @@ export function PaymentForm({
   )
 
   const pendingInstallments = synced.filter((i) => installmentAmountDue(i) > 0)
+
+  const selectedInst = installmentId ? synced.find((i) => i.id === installmentId) : undefined
+  const isEntradaPayment =
+    selectedInst != null &&
+    (selectedInst.label === 'Entrada' || selectedInst.number === 0)
+
+  useEffect(() => {
+    if (!defaultInstallmentId || !lot) return
+    const inst = synced.find((i) => i.id === defaultInstallmentId)
+    if (!inst) return
+    setInstallmentId(defaultInstallmentId)
+    const due = installmentAmountDue(inst)
+    if (due > 0) {
+      setAmountStr(
+        due.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      )
+    }
+    if (inst.label === 'Entrada' || inst.number === 0) setDate('')
+  }, [defaultInstallmentId, lot, synced])
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -54,7 +75,7 @@ export function PaymentForm({
     addPayment({
       clientId,
       lotId: lot.id,
-      date,
+      ...(date.trim() ? { date: date.trim() } : {}),
       amount,
       description,
       installmentId: inst?.id,
@@ -112,8 +133,21 @@ export function PaymentForm({
           placeholder="1000"
         />
       </Field>
-      <Field label="Data do pagamento *">
-        <TextInput type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+      <Field
+        label={isEntradaPayment ? 'Data do pagamento (opcional)' : 'Data do pagamento *'}
+      >
+        <TextInput
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required={!isEntradaPayment}
+        />
+        {isEntradaPayment && (
+          <p className="mt-1 text-xs text-slate-500">
+            Deixe em branco se ainda não souber a data; o valor entra no &quot;Já pago&quot; mesmo
+            assim.
+          </p>
+        )}
       </Field>
       <Field label="Parcela (opcional)">
         <SelectInput
